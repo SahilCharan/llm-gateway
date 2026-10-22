@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llm-gateway"
+version = "0.1.0"
+description = "Provider-neutral LLM gateway: job-routed failover chains, safe error classification, per-call USD ledger."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Kumar Sahil" }]
+requires-python = ">=3.11"
+dependencies = []
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[project.scripts]
+llm-gateway = "llm_gateway.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/SahilCharan/llm-gateway"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "tests"]
+addopts = "-q"

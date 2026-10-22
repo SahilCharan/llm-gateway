@@ -1,0 +1,36 @@
+# Copy to ./llm-gateway.toml (git-ignored) or point $LLM_GATEWAY_CONFIG at it.
+# API keys are never stored here: each provider names the env var that holds its key.
+
+[gateway]
+deadline_s = 60          # whole-call budget across all retries and failovers
+timeout_s = 30           # default per-route timeout (capped by what's left of the deadline)
+retries_per_route = 1    # retries on 429 / 5xx / timeouts before failing over
+backoff_s = 0.5
+max_backoff_s = 5        # a longer Retry-After means "fail over now" instead of waiting
+legacy_route = "openai:gpt-4o-mini"   # where LLM_GATEWAY_LEGACY=1 sends every job
+ledger_path = "llm_gateway_ledger.sqlite3"
+
+# Built in: deepseek, openrouter, openai, gemini. Add any OpenAI-compatible host:
+# [providers.local]
+# base_url = "http://localhost:8000/v1"
+# api_key_env = "LOCAL_LLM_KEY"
+
+[jobs]
+# Ordered chains: first healthy route wins. Model ids are examples; use your own.
+fast     = ["deepseek:deepseek-chat", "openrouter:openai/gpt-4o-mini"]
+qc       = ["deepseek:deepseek-chat", "gemini:gemini-2.0-flash"]
+prompt   = ["deepseek:deepseek-chat", "openrouter:anthropic/claude-3.5-haiku"]
+vision   = ["openrouter:qwen/qwen-2.5-vl-72b-instruct", { route = "gemini:gemini-2.0-flash", timeout_s = 45 }]
+research = [{ route = "deepseek:deepseek-reasoner", timeout_s = 120 }, "openrouter:openai/gpt-4o"]
+
+# USD per 1M tokens. PLACEHOLDER NUMBERS: copy the current figures from each
+# provider's pricing page (or your contract) before trusting the ledger.
+# Routes without a price are still logged and flagged as "unpriced" in reports.
+[prices."deepseek:deepseek-chat"]
+input = 0.27
+output = 1.10
+cached_input = 0.07
+
+[prices."gemini:gemini-2.0-flash"]
+input = 0.10
+output = 0.40
