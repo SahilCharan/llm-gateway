@@ -1,6 +1,5 @@
 # llm-gateway
 
-[![CI](https://github.com/SahilCharan/llm-gateway/actions/workflows/ci.yml/badge.svg)](https://github.com/SahilCharan/llm-gateway/actions/workflows/ci.yml)
 
 A small, provider-neutral LLM gateway. Application code asks for a **job**
 (`vision`, `qc`, `prompt`, `research`, `fast`, ...). The gateway sends it down that
